@@ -1,0 +1,61 @@
+project=# \d users
+                                     Table "public.users"
+  Column  |          Type          | Collation | Nullable |              Default
+----------+------------------------+-----------+----------+-----------------------------------
+ id       | integer                |           | not null | nextval('users_id_seq'::regclass)
+ name     | character varying(100) |           |          |
+ email    | character varying(100) |           |          |
+ password | character varying(255) |           |          |
+ domain   | character varying(100) |           |          |
+ type     | character varying(20)  |           |          |
+ address  | character varying(255) |           |          |
+ location | character varying(100) |           |          |
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+Referenced by:
+    TABLE "entrepreneurs" CONSTRAINT "entrepreneurs_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "investors" CONSTRAINT "investors_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "notifications" CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+    TABLE "projects" CONSTRAINT "projects_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+
+
+project=# \d projects
+                                        Table "public.projects"
+     Column      |          Type          | Collation | Nullable |               Default
+-----------------+------------------------+-----------+----------+--------------------------------------
+ id              | integer                |           | not null | nextval('projects_id_seq'::regclass)
+ user_id         | integer                |           |          |
+ name            | character varying(100) |           |          |
+ description     | text                   |           |          |
+ status          | character varying(20)  |           |          | 'Pending'::character varying
+ last_updated_by | integer                |           |          |
+Indexes:
+    "projects_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "projects_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+
+
+project=# \d Investors
+                             Table "public.investors"
+ Column  |  Type   | Collation | Nullable |                Default
+---------+---------+-----------+----------+---------------------------------------
+ id      | integer |           | not null | nextval('investors_id_seq'::regclass)
+ user_id | integer |           |          |
+Indexes:
+    "investors_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "investors_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
+
+
+project=# \d Entrepreneurs
+                                   Table "public.entrepreneurs"
+     Column     |     Type      | Collation | Nullable |                  Default
+----------------+---------------+-----------+----------+-------------------------------------------
+ id             | integer       |           | not null | nextval('entrepreneurs_id_seq'::regclass)
+ user_id        | integer       |           |          |
+ min_investment | numeric(10,2) |           |          |
+Indexes:
+    "entrepreneurs_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "entrepreneurs_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id)
